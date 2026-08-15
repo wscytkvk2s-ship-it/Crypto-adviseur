@@ -42,9 +42,29 @@ function scoreAt(p,i){
  return Math.min(100,Math.round(trend+rs+drop+mm));
 }
 async function fetchData(id,days){
- const u=`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=eur&days=${days}&interval=daily`;
- const r=await fetch(u);if(!r.ok)throw Error('Koersdata kon niet worden opgehaald (HTTP '+r.status+').');
- return (await r.json()).prices;
+ const symbols={bitcoin:'BTCEUR',ethereum:'ETHEUR',solana:'SOLEUR'};
+ const symbol=symbols[id];
+ if(!symbol)throw Error('Onbekende munt.');
+ const targetDays=Math.max(365,Math.round(days));
+ const end=Date.now();
+ const start=end-targetDays*86400000;
+ const out=[];
+ let cursor=start;
+ while(cursor<end){
+   const u=`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1d&startTime=${cursor}&endTime=${end}&limit=1000`;
+   const r=await fetch(u,{cache:'no-store'});
+   if(!r.ok)throw Error('Koersdata kon niet worden opgehaald (HTTP '+r.status+').');
+   const rows=await r.json();
+   if(!Array.isArray(rows)||!rows.length)break;
+   for(const row of rows)out.push([row[0],Number(row[4])]);
+   const last=rows[rows.length-1][0];
+   if(rows.length<1000)break;
+   cursor=last+86400000;
+ }
+ const unique=new Map(out.map(x=>[x[0],x]));
+ const prices=[...unique.values()].sort((a,b)=>a[0]-b[0]);
+ if(prices.length<250)throw Error('Te weinig historische koersdata ontvangen. Probeer het opnieuw.');
+ return prices;
 }
 function simulate(prices,capital,feePct){
  const p=prices.map(x=>x[1]), f=feePct/100, start=200, step=Math.max(1,Math.floor((p.length-start)/500));
@@ -83,7 +103,7 @@ async function run(){
   <div class="kpi"><div class="muted">Winnaar</div><div class="num">${winner}</div></div></div>
   <p>De strategie zou in deze test op <b>${buyDate}</b> zijn ingestapt met een score van ${res.signal}/100. Daarna is de positie aangehouden.</p>
   <p class="small">Let op: dit is bewust een eenvoudige eerste backtest. Er is geen slippage, geen belasting en geen realistische orderuitvoering verwerkt. Historische resultaten zeggen niets zeker over toekomstige rendementen.</p></div>
-  <div class="card"><h2>Interpretatie</h2><p>De app gebruikt historische prijsdata voor trend, RSI, momentum en afstand tot de 1-jaarstop. CoinGecko levert hiervoor historische prijs-, market-cap- en volumegegevens; voor backtesting is de historische time-series endpoint bedoeld. (bron: CoinGecko API-documentatie)</p></div>`;
+  <div class="card"><h2>Interpretatie</h2><p>De app gebruikt historische prijsdata voor trend, RSI, momentum en afstand tot de 1-jaarstop. De app gebruikt openbare dagelijkse EUR-koersdata van Binance voor de geselecteerde munt. De backtest gebruikt uitsluitend historische slotkoersen.</p></div>`;
  }catch(e){out.innerHTML='<div class="card"><b>Fout:</b> '+e.message+'<p class="small">Probeer opnieuw. De app heeft internettoegang nodig om historische koersdata op te halen.</p></div>'}
 }
 </script></body></html>
