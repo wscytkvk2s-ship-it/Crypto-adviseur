@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crypto Adviseur – Versie 7</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;margin:0;background:#f3f4f6;color:#161616}
+main{max-width:1050px;margin:auto;padding:16px}
+.card{background:#fff;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 3px 14px #00000012}
+h1{margin:4px 0 2px;font-size:28px}h2{margin-top:0}
+.apphead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.apphead button{width:auto}.settings-panel{display:none}.settings-panel.open{display:block}.settings-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid #eee}.settings-row:last-child{border-bottom:0}.switchlabel{display:flex;align-items:center;gap:9px;color:#161616;font-size:15px;margin:0}.switchlabel input{width:20px;height:20px}.info-btn{display:inline-flex;width:25px;height:25px;padding:0;margin-left:8px;border-radius:50%;align-items:center;justify-content:center;background:#e8eef8;color:#1d4ed8;border:1px solid #cbd5e1;font-size:14px;vertical-align:2px}.info-text{display:none;margin:10px 0 14px;padding:12px;border-radius:10px;background:#eef4ff;color:#334155;font-size:13px;line-height:1.5}.info-text.open{display:block}.hide-info-buttons .info-btn,.hide-info-buttons .info-text{display:none!important}
+.term-info-btn{display:inline-flex;width:19px;height:19px;padding:0;margin-left:5px;border-radius:50%;align-items:center;justify-content:center;background:#eef4ff;color:#1d4ed8;border:1px solid #bfdbfe;font-size:11px;vertical-align:1px}.hide-info-buttons .term-info-btn{display:none!important}.info-modal{display:none;position:fixed;inset:0;z-index:1000;background:#0008;padding:18px;align-items:center;justify-content:center}.info-modal.open{display:flex}.info-dialog{width:min(560px,100%);background:#fff;border-radius:16px;padding:20px;box-shadow:0 20px 60px #0005}.info-dialog h3{margin-top:0}.info-dialog button{width:auto;float:right}.info-dialog p{line-height:1.6;color:#334155}
+.muted{color:#666;font-size:14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+label{display:block;font-size:13px;color:#666;margin-bottom:5px}
+select,input,button{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px}
+button{background:#111;color:#fff;border:0;font-weight:700}
+button:disabled{opacity:.55}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.kpi{padding:14px;background:#f7f7f7;border-radius:12px}.num{font-size:24px;font-weight:800}
+.good{font-weight:800;color:#087a35}.warn{font-weight:800;color:#9a6a00}.bad{font-weight:800;color:#b42318}
+table{width:100%;border-collapse:collapse}td,th{padding:9px;border-bottom:1px solid #eee;text-align:left}
+canvas{width:100%;height:300px;border:1px solid #eee;border-radius:12px}
+.small{font-size:12px;color:#666;line-height:1.5}.pill{display:inline-block;padding:6px 9px;border-radius:999px;font-weight:700;font-size:13px}
+.green{background:#e8f7ee;color:#087a35}.yellow{background:#fff5d6;color:#8a6100}.red{background:#fdecec;color:#b42318}
+.buyzone{display:grid;grid-template-columns:1fr 1fr;gap:10px}.zone{padding:14px;border-radius:12px;background:#f7f7f7}
+.notice{padding:12px;border-radius:12px;background:#f1f5f9;margin:10px 0}.customcoin{display:flex;gap:8px;align-items:center;margin-top:8px}.customcoin input{flex:1}.customcoin button{width:auto;white-space:nowrap}.removebtn{background:#b42318}.ai-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.ai-box{padding:14px;border-radius:14px;background:#f7f7f7}.ai-big{font-size:25px;font-weight:900}.ai-good{background:#e8f7ee}.ai-warn{background:#fff5d6}.ai-bad{background:#fdecec}.coinremove{cursor:pointer}.v5grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.v5box{padding:14px;border-radius:14px;background:#f7f7f7}.v5big{font-size:24px;font-weight:900}.goodbox{background:#e8f7ee}.warnbox{background:#fff5d6}.badbox{background:#fdecec}.muted2{color:#666;font-size:12px}.logrow{padding:9px;border-bottom:1px solid #e5e7eb}.smallpill{display:inline-block;padding:4px 8px;border-radius:99px;font-size:11px;background:#e9ecef}.signalhero{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.bigsignal{padding:18px;border-radius:16px;background:#f7f7f7}.bigsignal .action{font-size:30px;font-weight:900}.confidence{font-size:18px;font-weight:700}.tagrow{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.tag{padding:5px 9px;border-radius:99px;background:#e9ecef;font-size:12px}.check{padding:10px;border-radius:10px;background:#f7f7f7;margin:6px 0}.check.good{background:#e8f7ee}.check.warn{background:#fff5d6}.check.bad{background:#fdecec}@media(max-width:700px){.signalhero{grid-template-columns:1fr}}.scoregrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.signal{padding:12px;background:#f7f7f7;border-radius:12px}.signal b{font-size:18px}.risk-low{background:#e8f7ee;color:#087a35}.risk-mid{background:#fff5d6;color:#8a6100}.risk-high{background:#fdecec;color:#b42318}.recommend{padding:16px;border-radius:14px;background:#f7f7f7}.bar{height:9px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:6px}.bar>span{display:block;height:100%;background:#111}.tradegood{font-weight:800;color:#087a35}.tradebad{font-weight:800;color:#b42318}.status{padding:10px;border-radius:10px;background:#eef2ff;margin-top:10px}.error{background:#fdecec;color:#8f1d14}.success{background:#e8f7ee;color:#087a35}@media(max-width:600px){main{padding:10px}.card{padding:14px;border-radius:14px}.buyzone{grid-template-columns:1fr}.customcoin{flex-wrap:wrap}.customcoin input{flex-basis:100%}h1{font-size:24px}canvas{height:240px}}
+</style>
+</head>
+<body><main>
+<div class="apphead"><div><h1>₿ Crypto Adviseur</h1><div class="muted">Versie 7.4 — uitgebreide uitleg bij onderdelen en begrippen</div></div><button type="button" onclick="toggleSettings()">⚙ Instellingen</button></div>
+
+<div id="settingsPanel" class="card settings-panel">
+  <h2>⚙ Applicatie-instellingen</h2>
+  <div class="settings-row"><label class="switchlabel"><input id="showInfoToggle" type="checkbox" checked onchange="setInfoVisibility(this.checked)"> Toon informatieknoppen bij alle onderdelen</label></div>
+  <div class="settings-row"><div style="width:100%"><label for="customCoin">Eigen munt toevoegen</label><div class="customcoin"><input id="customCoin" placeholder="Bijv. ADA, DOGE, LINK of AVAX"><button type="button" onclick="addCustomCoin()">Toevoegen</button><button id="removeCoinBtn" class="removebtn" type="button" onclick="removeCustomCoin()" disabled>Geselecteerde verwijderen</button></div><div class="small">Eigen munten worden in deze browser bewaard en automatisch meegenomen in het marktoverzicht. Alleen een beschikbaar EUR-handelspaar kan worden geanalyseerd.</div></div></div>
+</div>
+
+<div class="card"><h2>Analyse instellen</h2><div class="grid">
+<div><label for="coin">Munt</label>
+<select id="coin" onchange="updateRemoveButton()">
+  <option value="BTCEUR" selected>Bitcoin (BTC)</option>
+  <option value="ETHEUR">Ethereum (ETH)</option>
+  <option value="SOLEUR">Solana (SOL)</option>
+  <option value="XRPEUR">XRP (XRP)</option>
+</select>
+</div>
+<div><label>Startkapitaal</label><input id="capital" type="number" value="500" min="1"></div>
+<div><label>Backtest</label><select id="years"><option value="1">1 jaar</option><option value="2" selected>2 jaar</option><option value="4">4 jaar</option></select></div>
+<div><label>Transactiekosten</label><input id="fee" type="number" value="0.25" min="0" step="0.05"><span class="muted">% per transactie</span></div>
+</div><br><button id="runBtn" onclick="run()">Analyse + backtest uitvoeren</button></div>
+
+<div id="out"><div class="card">Druk op de knop om de actuele markt en historische data te analyseren.</div></div>
+
+<div class="card"><h2>🔎 Markt-overzicht</h2><button id="marketBtn" onclick="market()">Analyseer alle opgeslagen munten</button><div id="marketOut" class="notice">Nog geen markt-overzicht uitgevoerd.</div></div>
+
+<div class="card"><h2 id="portfolioTitle">💶 Voorbeeldverdeling</h2><div id="portfolioOut" class="notice">Voer eerst de marktanalyse uit.</div></div>
+
+<p class="small">Dit is een experimentele beslissingshulp en geen persoonlijk beleggingsadvies. Historische resultaten bieden geen garantie voor toekomstige rendementen.</p>
+</main>
+<div id="infoModal" class="info-modal" onclick="if(event.target===this)closeTermInfo()"><div class="info-dialog" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle"><button type="button" onclick="closeTermInfo()">Sluiten</button><h3 id="infoModalTitle"></h3><p id="infoModalText"></p></div></div>
+<script>
+const euro=n=>Number(n).toLocaleString('nl-NL',{style:'currency',currency:'EUR',maximumFractionDigits:2});
+const pct=n=>(n*100).toFixed(1)+'%';
+const infoPreferenceKey='cryptoShowInfoButtonsV7';
+
+function toggleSettings(){
+  document.getElementById('settingsPanel').classList.toggle('open');
+}
+
+function setInfoVisibility(show){
+  document.body.classList.toggle('hide-info-buttons',!show);
+  if(!show)document.querySelectorAll('.info-text.open').forEach(x=>x.classList.remove('open'));
+  try{localStorage.setItem(infoPreferenceKey,show?'1':'0');}catch(e){}
+}
+
+function infoForTitle(title){
+  const t=title.toLowerCase();
+  if(t.includes('applicatie-instellingen'))return 'Hier beheer je eigen munten en bepaal je of de informatieknoppen in de hele applicatie zichtbaar zijn.';
+  if(t.includes('analyse instellen'))return 'Kies de munt, het startkapitaal, de testperiode en de transactiekosten voor de individuele analyse en backtest.';
+  if(t.includes('handelssignaal'))return 'Het handelssignaal combineert trend, RSI, MACD, momentum, koersdaling en risico. Het is een rekenkundig hulpmiddel, geen voorspelling of persoonlijk advies.';
+  if(t.includes('slimme beslislaag'))return 'Deze laag vertaalt meerdere technische signalen naar een kansinschatting en verwacht rendement. De uitkomst blijft afhankelijk van historische gegevens.';
+  if(t.includes('vandaag doen'))return 'Een praktische samenvatting van het huidige signaal. Bij twijfel of zwakke historische betrouwbaarheid adviseert de app om op bevestiging te wachten.';
+  if(t.includes('historische betrouwbaarheid'))return 'Toont hoe vergelijkbare signalen in de beschikbare historie na 30 en 60 dagen presteerden. Een kleine steekproef is minder betrouwbaar.';
+  if(t.includes('huidig advies'))return 'Geeft de actuele score, risicoscore, indicatoren en dynamisch berekende koop- en verkoopzones voor de gekozen munt.';
+  if(t.includes('waarom dit advies'))return 'Vat de belangrijkste technische redenen achter het huidige advies samen. Iedere reden beschrijft één indicator; kijk vooral of meerdere onafhankelijke indicatoren dezelfde richting aanwijzen.';
+  if(t.includes('score-opbouw'))return 'Laat zien hoeveel punten elk onderdeel aan de totaalscore bijdraagt. De noemer is het maximale aantal punten binnen dat onderdeel.';
+  if(t.includes('positiegrootte'))return 'Geeft een rekenvoorbeeld van een mogelijke inzet op basis van startkapitaal en risicoscore. Persoonlijke financiële omstandigheden worden niet meegenomen.';
+  if(t.includes('koopzones'))return 'Toont indicatieve prijsgebieden voor gespreid instappen, plus een risicogrens en mogelijke koersdoelen. De afstanden worden aangepast aan recente volatiliteit.';
+  if(t.includes('indicatoren'))return 'De ruwe technische meetwaarden waarop delen van de score zijn gebaseerd. Geen enkele indicator is op zichzelf voldoende voor een betrouwbare beslissing.';
+  if(t.includes('backtest'))return 'Vergelijkt de strategie met kopen-en-vasthouden. Signalen worden pas de volgende handelsdag uitgevoerd om vooruitkijken te voorkomen.';
+  if(t.includes('markt-overzicht'))return 'Vergelijkt alle standaardmunten en opgeslagen eigen munten met dezelfde scoremethode. Munten zonder beschikbaar EUR-handelspaar tonen geen data.';
+  if(t.includes('voorbeeldverdeling'))return 'Een rekenvoorbeeld dat alleen munten met een voldoende hoge score selecteert en de verdeling verlaagt bij een hogere risicoscore.';
+  if(t.includes('wat betekent'))return 'Achtergrondinformatie over de interpretatie en beperkingen van de berekende scores.';
+  return 'Extra uitleg over dit onderdeel en hoe je de getoonde resultaten kunt interpreteren.';
+}
+
+const termGlossary=[
+  ['startkapitaal','Startkapitaal','Het bedrag waarmee de simulatie begint. Dit beïnvloedt de bedragen, maar niet de technische score. Gebruik voor een realistische vergelijking hetzelfde bedrag dat je daadwerkelijk zou kunnen missen.'],
+  ['transactiekosten','Transactiekosten','Het percentage dat bij iedere koop én verkoop wordt afgetrokken. Hogere kosten raken vooral strategieën die vaak handelen en kunnen een ogenschijnlijk voordeel volledig laten verdwijnen.'],
+  ['backtest','Backtestperiode','De historische periode waarover de strategie wordt getest. Een langere periode bevat meer marktomstandigheden, maar oudere omstandigheden hoeven niet representatief te zijn voor de toekomst.'],
+  ['munt','Munt','De cryptomunt die individueel wordt onderzocht. De app gebruikt een EUR-handelspaar; wanneer dat paar niet beschikbaar is, kan de analyse geen koersgegevens ophalen.'],
+  ['kans op positief resultaat','Kans op positief resultaat','Een modelmatige schatting dat de koers na 30 dagen hoger staat. De berekening combineert score, signaalsterkte, historische uitkomsten en risico. Dit is geen statistisch gekalibreerde garantie.'],
+  ['verwacht rendement','Verwacht rendement','Het gemiddelde of modelmatig geschatte procentuele koersverschil over de genoemde termijn. Uitschieters kunnen dit gemiddelde sterk beïnvloeden; zie het niet als een beloofd rendement.'],
+  ['historische koop-kans','Historische KOOP-kans','Het percentage eerdere KOOP-signalen waarna de koers na de gekozen termijn hoger stond. Controleer altijd het aantal signalen: weinig waarnemingen geven een onzekere uitkomst.'],
+  ['betrouwbaarheid','Signaalsterkte','Een interne zekerheidsmaat op basis van het verschil tussen koop- en verkooppunten. Het is geen objectieve kans dat de voorspelling uitkomt.'],
+  ['signaalsterkte','Signaalsterkte','Geeft aan hoe duidelijk de onderliggende indicatoren dezelfde richting aanwijzen. Een hoge waarde kan nog steeds verkeerd uitpakken bij plotseling nieuws of een marktomslag.'],
+  ['score','Score','Een samengestelde waardering van 0–100 uit trend, RSI, afstand tot de top, momentum en MACD. Een hogere score betekent binnen dit model aantrekkelijker, niet automatisch veiliger.'],
+  ['risico','Risico','Een score van 0–100 gebaseerd op volatiliteit, daling vanaf de top en een zwakke langetermijntrend. Hoog risico betekent grotere koersschommelingen en een grotere kans op fors tussentijds verlies.'],
+  ['30d momentum','30-daags momentum','De procentuele koersverandering over ongeveer 30 dagen. Positief momentum wijst op recente stijging; sterk positief momentum kan ook betekenen dat een munt tijdelijk oververhit is.'],
+  ['momentum 30 dagen','Momentum 30 dagen','De huidige koers vergeleken met die van 30 dagen geleden. Het meet snelheid en richting, maar zegt niets over de fundamentele waarde van de munt.'],
+  ['momentum 90 dagen','Momentum 90 dagen','De koersverandering over circa drie maanden. Deze langere termijn reageert trager en helpt onderscheiden of een beweging kortstondig of breder gedragen is.'],
+  ['volatiliteit op jaarbasis','Volatiliteit','Een naar jaarbasis omgerekende maat voor dagelijkse koersschommelingen. Hoe hoger het percentage, hoe groter normaal gesproken zowel winstkans als verliesrisico.'],
+  ['daling vanaf 1-jaar top','Daling vanaf de jaartop','Hoeveel de actuele koers onder de hoogste koers van ongeveer twaalf maanden ligt. Een grote daling kan herstelruimte bieden, maar kan ook op blijvende zwakte wijzen.'],
+  ['30-daags gemiddelde','30-daags gemiddelde','De gemiddelde slotkoers van de laatste 30 dagen. Dit korte gemiddelde reageert relatief snel op recente koersbewegingen.'],
+  ['50-daags gemiddelde','50-daags gemiddelde','De gemiddelde slotkoers van de laatste 50 dagen. Boven dit gemiddelde handelen wordt vaak als middellange kracht gezien.'],
+  ['200-daags gemiddelde','200-daags gemiddelde','Een veelgebruikte langetermijntrend. Een 50-daags gemiddelde boven het 200-daags gemiddelde geldt hier als positief; eronder als zwakker.'],
+  ['rsi','RSI','De Relative Strength Index vergelijkt recente stijgingen en dalingen op een schaal van 0–100. Hoog kan oververhit betekenen en laag oversold, maar sterke trends kunnen lang extreem blijven.'],
+  ['macd','MACD','Een trend- en momentumindicator gebaseerd op het verschil tussen een snelle en langzame exponentiële gemiddelde koers. Positief ondersteunt een opwaartse trend; negatief een neerwaartse.'],
+  ['trend','Trend','Het trenddeel van de totaalscore vergelijkt koersgemiddelden en de actuele koers. Een positieve trend kan aanhouden, maar draait altijd pas met vertraging.'],
+  ['koopkans','Koopkansscore','Dit onderdeel beloont een koers die onder de recente top ligt. Goedkoper dan de top betekent echter niet automatisch goedkoop of dat herstel volgt.'],
+  ['eerste koopzone','Eerste koopzone','Een voorzichtige instapzone onder de huidige koers, aangepast aan recente volatiliteit. Gespreid kopen vermindert timingrisico maar voorkomt verlies niet.'],
+  ['sterke koopzone','Sterke koopzone','Een diepere instapzone voor een grotere terugval. Dat de koers deze zone bereikt is geen zelfstandig koopsignaal; controleer opnieuw trend en risico.'],
+  ['risicogrens','Risicogrens','Een indicatief niveau waaronder de oorspronkelijke handelsgedachte duidelijk verzwakt. Het is geen gegarandeerde stopprijs: snelle markten kunnen erdoorheen springen.'],
+  ['koersdoelen','Koersdoelen','Indicatieve winstniveaus boven de huidige koers, berekend met recente volatiliteit. Het zijn scenario’s, geen voorspellingen of verkooporders.'],
+  ['max. inzet','Maximale inzet','Een voorbeeldbedrag dat lager wordt naarmate de risicoscore stijgt. Dit houdt geen rekening met inkomen, schulden, overige beleggingen of persoonlijke risicotolerantie.'],
+  ['positietype','Positietype','Een eenvoudige vertaling van de risicoscore naar klein, normaal of ruim. Het is geen persoonlijk passendheidsadvies.'],
+  ['strategie','Strategie','De eindwaarde van de geteste koop- en verkoopregels, na transactiekosten. Belastingen, spread, slippage en liquiditeitsproblemen zijn niet volledig meegenomen.'],
+  ['buy & hold','Buy & hold','Een vergelijking waarbij aan het begin wordt gekocht en tot het einde wordt vastgehouden. Instap- en uitstapkosten worden meegenomen.'],
+  ['trades','Trades','Het aantal uitgevoerde koop- en verkooptransacties. Meer trades betekent doorgaans meer kosten en meer gevoeligheid voor timing.'],
+  ['max. verlies','Maximale drawdown','De grootste historische daling van een tussentijdse portefeuille-top naar een later dieptepunt. Dit toont hoeveel verlies je tijdens de test had moeten verdragen.'],
+  ['winnende trades','Winnende trades','Afgesloten posities waarbij de verkoopkoers boven de aankoopkoers lag. De grootte van winsten telt hier niet mee, alleen het aantal.'],
+  ['verliesgevende trades','Verliesgevende trades','Afgesloten posities waarbij de verkoopkoers niet boven de aankoopkoers lag. Eén groot verlies kan zwaarder wegen dan meerdere kleine winsten.'],
+  ['totale transactiekosten','Totale transactiekosten','De opgetelde kosten van alle simulatieorders. Werkelijke kosten kunnen hoger zijn door spread, slippage en beursafhankelijke tarieven.'],
+  ['positie aan einde test','Eindpositie','Geeft aan of de strategie op de laatste testdag nog crypto bezit of volledig in cash staat. Een open positie bevat nog ongerealiseerde winst of verlies.'],
+  ['coin','Coin','De munt die in deze rij wordt vergeleken.'],
+  ['koers','Koers','De laatst ontvangen dagkoers in euro. Deze kan vertraagd zijn en kan afwijken van de actuele bied- of laatprijs op jouw beurs.'],
+  ['advies','Advieslabel','Een tekstuele vertaling van de technische score. Het label houdt geen rekening met jouw persoonlijke situatie en is geen persoonlijk beleggingsadvies.'],
+  ['30d','30 dagen','De koersverandering over ongeveer de laatste 30 dagen.'],
+  ['koop','KOOP-punten','Het aantal voorwaarden dat op dit moment in de richting van kopen wijst. Bekijk dit samen met verkoop-punten, risico en historische betrouwbaarheid.'],
+  ['wacht','WACHT-punten','Het aantal neutrale voorwaarden. Veel wachtpunten betekenen dat het model onvoldoende bevestiging voor kopen of verkopen ziet.'],
+  ['verkoop','VERKOOP-punten','Het aantal voorwaarden dat op zwakte of verhoogd risico wijst. Dit betekent niet automatisch dat iedere bestaande positie verkocht moet worden.']
+];
+
+function findTermInfo(label){
+  const clean=label.toLowerCase().replace(/[^a-z0-9à-ÿ&. -]/g,' ').replace(/\s+/g,' ').trim();
+  return termGlossary.find(([key])=>clean===key)
+    ||termGlossary.find(([key])=>clean.startsWith(key+' '))
+    ||[...termGlossary].sort((a,b)=>b[0].length-a[0].length).find(([key])=>clean.includes(key));
+}
+
+function openTermInfo(title,description){
+  document.getElementById('infoModalTitle').textContent=title;
+  document.getElementById('infoModalText').textContent=description;
+  document.getElementById('infoModal').classList.add('open');
+}
+function closeTermInfo(){document.getElementById('infoModal').classList.remove('open')}
+
+function decorateTermButtons(root=document){
+  root.querySelectorAll?.('label,th,td:first-child,.kpi .muted,.signal .muted,.muted2,.mini,.confidence,.tag,.zone b,.v5box>b').forEach(el=>{
+    if(el.dataset.termInfoReady)return;
+    const found=findTermInfo(el.textContent.trim());
+    if(!found)return;
+    el.dataset.termInfoReady='1';
+    const btn=document.createElement('button');
+    btn.type='button';btn.className='term-info-btn';btn.textContent='i';
+    btn.setAttribute('aria-label','Uitleg over '+found[1]);btn.title='Uitleg over '+found[1];
+    btn.addEventListener('click',event=>{event.stopPropagation();openTermInfo(found[1],found[2])});
+    el.appendChild(btn);
+  });
+}
+
+function decorateInfoButtons(root=document){
+  root.querySelectorAll?.('h2:not([data-info-ready]),h3:not([data-info-ready])').forEach(h=>{
+    h.dataset.infoReady='1';
+    const btn=document.createElement('button');
+    btn.type='button';btn.className='info-btn';btn.textContent='i';
+    btn.setAttribute('aria-label','Toon uitleg over '+h.textContent.trim());
+    const text=document.createElement('div');
+    text.className='info-text';text.textContent=infoForTitle(h.textContent.trim());
+    btn.addEventListener('click',()=>text.classList.toggle('open'));
+    h.appendChild(btn);h.insertAdjacentElement('afterend',text);
+  });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  let show=true;
+  try{show=localStorage.getItem(infoPreferenceKey)!=='0';}catch(e){}
+  document.getElementById('showInfoToggle').checked=show;
+  setInfoVisibility(show);
+  const main=document.querySelector('main');
+  decorateInfoButtons(main);
+  decorateTermButtons(main);
+  new MutationObserver(mutations=>mutations.forEach(m=>m.addedNodes.forEach(n=>{
+    if(n.nodeType===1){
+      const scope=n.matches?.('h2')?n.parentElement:n;
+      decorateInfoButtons(scope);decorateTermButtons(scope);
+    }
+  }))).observe(main,{childList:true,subtree:true});
+});
+
+const avg=(a,n,i)=>{if(i<n-1)return null;let s=0;for(let j=i-n+1;j<=i;j++)s+=a[j];return s/n};
+function rsi(a,i,n=14){if(i<n)return 50;let g=0,l=0;for(let j=i-n+1;j<=i;j++){let d=a[j]-a[j-1];if(d>0)g+=d;else l-=d}if(l===0)return 100;return 100-100/(1+(g/n)/(l/n))}
+function ema(a,n,i){if(i<n-1)return null;let k=2/(n+1),e=a[i-n+1];for(let j=i-n+2;j<=i;j++)e=a[j]*k+e*(1-k);return e}
+function macd(a,i){let e12=ema(a,12,i),e26=ema(a,26,i);return e12==null||e26==null?0:e12-e26}
+function historicalSignalStats(p,i,horizon){
+  horizon=horizon||30;
+  const start=Math.max(210,i-730);
+  let buyN=0,buyWin=0,buySum=0,sellN=0,sellWin=0,sellSum=0;
+  for(let j=start;j<=i-horizon;j++){
+    const s=signalDetails(p,j); if(!s)continue;
+    const ret=p[j+horizon]/p[j]-1;
+    if(s.action==='KOOP'){buyN++;buySum+=ret;if(ret>0)buyWin++;}
+    if(s.action==='VERKOOP'){sellN++;sellSum+=ret;if(ret<0)sellWin++;}
+  }
+  return {horizon,buyN,buyRate:buyN?buyWin/buyN:null,buyAvg:buyN?buySum/buyN:null,
+    sellN,sellRate:sellN?sellWin/sellN:null,sellAvg:sellN?sellSum/sellN:null};
+}
+function expectedReturn(d,stats){
+  if(stats&&stats.buyAvg!=null&&stats.buyN>=5&&d.total>=68)return stats.buyAvg;
+  return d.momentum30*.45+d.momentum90*.35-(d.risk/100)*.03;
+}
+function todayDecision(d,s,stats){
+  if(s.action==='KOOP'){
+    if(stats&&stats.buyN>=8&&stats.buyRate<.50)return {label:'WACHT OP BEVESTIGING',class:'warnbox'};
+    return {label:'NU KOPEN / GELEIDELIJK INSTAPPEN',class:'goodbox'};
+  }
+  if(s.action==='VERKOOP')return {label:'NIET KOPEN / RISICO AFBOUWEN',class:'badbox'};
+  return {label:'WACHTEN',class:'warnbox'};
+}
+
+function signalDetails(p,i){
+  const d=scoreDetails(p,i); if(!d)return null;
+  let buy=0,sell=0,wait=0;
+  if(d.total>=78)buy+=3; else if(d.total>=68)buy+=2; else if(d.total>=55)wait+=2; else sell+=2;
+  if(d.rsi>=72)sell+=2; else if(d.rsi>=60)sell+=1; else if(d.rsi<38)buy+=2; else if(d.rsi<50)buy+=1;
+  if(d.s50>d.s200)buy+=2; else sell+=2;
+  if(d.price>d.s50)buy+=1; else sell+=1;
+  if(d.macd>0)buy+=1; else sell+=1;
+  if(d.momentum30>0)buy+=1; else sell+=1;
+  if(d.drawdown>.30)buy+=1;
+  if(d.risk>=70)sell+=2; else if(d.risk>=55)sell+=1;
+  let action='WACHT'; if(buy>=6&&buy>sell+1)action='KOOP'; if(sell>=6&&sell>buy+1)action='VERKOOP';
+  const confidence=Math.round(Math.min(95,55+Math.abs(buy-sell)*7+(d.total>=70?8:0)));
+  return {action,confidence,buy,sell,wait};
+}
+function signalClass(a){return a==='KOOP'?'good':a==='VERKOOP'?'bad':'warn';}
+function signalReason(d){const r=[];r.push(d.s50>d.s200?'trend positief':'trend zwak');if(d.rsi<55)r.push('RSI niet oververhit');else if(d.rsi>70)r.push('RSI oververhit');else r.push('RSI neutraal');r.push(d.macd>0?'MACD positief':'MACD negatief');r.push(d.momentum30>0?'30d momentum positief':'30d momentum negatief');if(d.risk>=70)r.push('hoog risico');else if(d.risk>=55)r.push('verhoogd risico');return r;}
+
+function scoreDetails(p,i){
+  if(i<60)return null;
+
+  const cur=p[i];
+  const s30=avg(p,30,i);
+  const s50=avg(p,50,i);
+  const s200=avg(p,Math.min(200,i+1),i);
+  const R=rsi(p,i);
+
+  let high=-Infinity;
+  for(let j=Math.max(0,i-365);j<=i;j++) high=Math.max(high,p[j]);
+
+  const dd=(high-cur)/high;
+  const mom7=cur/p[i-7]-1;
+  const mom30=cur/p[i-30]-1;
+  const mom90=cur/p[i-90]-1;
+  const m=macd(p,i);
+
+  const trend =
+    (s50!=null&&s200!=null&&s50>s200?12:4) +
+    (s50!=null&&cur>s50?5:0) +
+    (s200!=null&&cur>s200?5:0);
+
+  const rsiScore = R<30?18:R<40?16:R<55?13:R<70?7:2;
+  const drawScore = dd>.5?18:dd>.35?15:dd>.2?12:dd>.1?7:2;
+  const momentumScore =
+    mom30<-.2?10:mom30<-.1?9:mom30<0?7:mom30<.15?5:2;
+  const longMomentum = mom90>0?5:0;
+  const macdScore = m>0?3:0;
+
+  const total=Math.max(0,Math.min(100,Math.round(
+    trend+rsiScore+drawScore+momentumScore+longMomentum+macdScore
+  )));
+
+  // Risk: combines volatility, drawdown and trend weakness.
+  let sum=0,sq=0,n=0;
+  for(let j=Math.max(1,i-29);j<=i;j++){
+    const daily=p[j]/p[j-1]-1;
+    sum+=daily;sq+=daily*daily;n++;
+  }
+  const mean=n?sum/n:0;
+  const vol=n?Math.sqrt(Math.max(0,sq/n-mean*mean))*Math.sqrt(365):0;
+
+  let risk=25;
+  risk += vol>.80?30:vol>.60?22:vol>.40?14:vol>.25?7:2;
+  risk += dd>.50?25:dd>.35?18:dd>.20?12:dd>.10?7:2;
+  if(s50!=null&&s200!=null&&s50<s200) risk+=12;
+  risk=Math.max(0,Math.min(100,Math.round(risk)));
+
+  return {
+    total,trend,rsi:R, rsiScore, drawdown:dd, drawScore,
+    momentum30:mom30,momentum90:mom90,momentumScore,
+    macd:m,macdScore,volatility:vol,risk,
+    price:cur,s30,s50,s200
+  };
+}
+
+function scoreAt(p,i){
+  const d=scoreDetails(p,i);
+  return d?d.total:null;
+}
+function advice(s){return s>=80?'STERKE KOOP':s>=68?'KOOP':s>=52?'AFWACHTEN':s>=40?'VERKOPEN / WINST NEMEN':'NIET KOPEN'}
+function adviceClass(s){return s>=68?'green':s>=52?'yellow':'red'}
+
+async function fetchData(symbol,days){
+  const need=Math.min(Math.max(days,30),1460);
+  const end=Date.now(), start=end-need*86400000;
+
+  // Primary source: Binance EUR daily candles.
+  try{
+    const limit=1000;
+    let all=[], from=start;
+    while(all.length<need){
+      const u=`https://api.binance.com/api/v3/klines?symbol=${encodeURIComponent(symbol)}&interval=1d&startTime=${from}&endTime=${end}&limit=${limit}`;
+      const r=await fetch(u,{cache:'no-store'});
+      if(!r.ok) throw Error('Binance HTTP '+r.status);
+      const rows=await r.json();
+      if(!Array.isArray(rows)||!rows.length) throw Error('Geen Binance-data');
+      all=all.concat(rows.map(x=>[Number(x[0]),Number(x[4])]));
+      const last=Number(rows[rows.length-1][0]);
+      from=last+86400000;
+      if(rows.length<limit) break;
+    }
+    const clean=dedupeSort(all);
+    if(clean.length>=Math.min(need-5,60)) return clean;
+  }catch(e){
+    console.warn('Binance niet beschikbaar:',e);
+  }
+
+  // Fallback: CoinGecko market chart in EUR.
+  const cgMap={BTCEUR:'bitcoin',ETHEUR:'ethereum',SOLEUR:'solana',XRPEUR:'ripple'};
+  const id=cgMap[symbol];
+  if(!id) throw Error('Onbekende munt.');
+  const daysParam=need<=365?String(need):'max';
+  const u=`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=eur&days=${daysParam}&interval=daily`;
+  const r=await fetch(u,{cache:'no-store'});
+  if(!r.ok) throw Error('Koersdata niet beschikbaar (HTTP '+r.status+').');
+  const j=await r.json();
+  const clean=dedupeSort((j.prices||[]).map(x=>[Number(x[0]),Number(x[1])]));
+  if(clean.length<60) throw Error('Te weinig historische koersdata ontvangen.');
+  return clean.slice(-need);
+}
+
+async function fetchJson(url,timeoutMs=12000){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const r=await fetch(url,{cache:'no-store',signal:controller.signal});
+    if(!r.ok) throw Error('HTTP '+r.status);
+    return await r.json();
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+const marketCache={};
+
+async function fetchMarketCoin(symbol){
+  const cached=marketCache[symbol];
+  if(cached && Date.now()-cached.time<300000) return cached.data;
+
+  const cgMap={BTCEUR:'bitcoin',ETHEUR:'ethereum',SOLEUR:'solana',XRPEUR:'ripple'};
+  const id=cgMap[symbol];
+  if(!id){
+    const data=await fetchData(symbol,230);
+    marketCache[symbol]={time:Date.now(),data};
+    return data;
+  }
+
+  // Market overview uses one independent request per coin.
+  // This avoids a failed request for one coin breaking the complete overview.
+  try{
+    const j=await fetchJson(
+      `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=eur&days=230&interval=daily`
+    );
+    const data=dedupeSort((j.prices||[]).map(x=>[Number(x[0]),Number(x[1])]));
+    if(data.length<60) throw Error('Te weinig historische data');
+    marketCache[symbol]={time:Date.now(),data};
+    return data;
+  }catch(e){
+    console.warn('CoinGecko marktoverzicht mislukt voor '+symbol,e);
+    // Fallback to the general loader.
+    const data=await fetchData(symbol,230);
+    marketCache[symbol]={time:Date.now(),data};
+    return data;
+  }
+}
+
+function dedupeSort(rows){
+  const seen=new Set();
+  return rows
+    .filter(x=>Number.isFinite(x[0])&&Number.isFinite(x[1])&&x[1]>0)
+    .filter(x=>!seen.has(x[0])&&seen.add(x[0]))
+    .sort((a,b)=>a[0]-b[0]);
+}
+
+function simulate(raw,capital,feePct){
+  const p=raw.map(x=>x[1]), f=feePct/100, start=200;
+  let cash=capital,units=0,trades=0,buyIdx=null,signal=0;
+  let peak=capital,maxDD=0,curve=[],bhCurve=[];
+  let wins=0,losses=0,lastBuyPrice=null,totalFees=0;
+
+  for(let i=start;i<p.length;i++){
+    // Gebruik alleen informatie die vóór deze handelsdag bekend was.
+    // Het signaal van gisteren wordt tegen de koers van vandaag uitgevoerd.
+    const s=scoreAt(p,i-1);
+
+    if(units===0 && s!=null && s>=75){
+      const fee=cash*f;
+      units=(cash-fee)/p[i];
+      cash=0;
+      trades++;
+      totalFees+=fee;
+      if(buyIdx===null){buyIdx=i;signal=s}
+      lastBuyPrice=p[i];
+    }
+    else if(units>0 && s!=null && s<=42){
+      const gross=units*p[i];
+      const fee=gross*f;
+      const proceeds=gross-fee;
+      if(lastBuyPrice!=null){
+        if(p[i]>lastBuyPrice) wins++; else losses++;
+      }
+      cash=proceeds;
+      units=0;
+      trades++;
+      totalFees+=fee;
+    }
+
+    const value=cash+units*p[i];
+    peak=Math.max(peak,value);
+    maxDD=Math.max(maxDD,(peak-value)/peak);
+    curve.push([raw[i][0],value]);
+
+    // Buy & hold from the same start date, including entry/exit fee.
+    const bhValue=capital*(1-f)/p[start]*p[i];
+    bhCurve.push([raw[i][0],bhValue]);
+  }
+
+  const final=cash+units*p[p.length-1]*(units>0?(1-f):1);
+  const bh=capital*(1-f)/p[start]*p[p.length-1]*(1-f);
+  const ret=final/capital-1,bhret=bh/capital-1;
+
+  return {
+    final,bh,ret,bhret,trades,maxDD,buyIdx,signal,curve,bhCurve,p,
+    wins,losses,totalFees,openPosition:units>0
+  };
+}
+function drawChart(raw,res){
+  const c=document.getElementById('chart'); if(!c)return;
+  const ctx=c.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const cssW=c.clientWidth||700, cssH=300;
+  c.width=cssW*dpr;c.height=cssH*dpr;
+  const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+
+  const vals=res.curve.map(x=>x[1]).concat(res.bhCurve.map(x=>x[1]));
+  const min=Math.min(...vals),max=Math.max(...vals),pad=24*dpr;
+  const xAt=i=>pad+i*(w-2*pad)/(res.curve.length-1||1);
+  const yAt=v=>h-pad-(v-min)/(max-min||1)*(h-2*pad);
+
+  function line(data,dash){
+    ctx.beginPath();
+    if(dash)ctx.setLineDash([7*dpr,5*dpr]); else ctx.setLineDash([]);
+    data.forEach((x,i)=>{
+      const xx=xAt(i),yy=yAt(x[1]);
+      i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);
+    });
+    ctx.stroke();
+  }
+
+  ctx.lineWidth=2*dpr;
+  line(res.curve,false);
+  line(res.bhCurve,true);
+  ctx.setLineDash([]);
+
+  ctx.fillStyle='#666';
+  ctx.font=`${12*dpr}px Arial`;
+  ctx.fillText('Strategie',pad,16*dpr);
+  ctx.fillText('Buy & hold',pad+85*dpr,16*dpr);
+  ctx.fillText(euro(max),pad,34*dpr);
+  ctx.fillText(euro(min),pad,h-6*dpr);
+}
+async function buildDailyDashboard(){
+  const box=document.getElementById('dailyOut');
+  if(!box)return;
+  const coins=[['BTCEUR','BTC'],['ETHEUR','ETH'],['SOLEUR','SOL'],['XRPEUR','XRP']];
+  [...document.getElementById('coin').options]
+    .filter(o=>!standardCoins.has(o.value))
+    .forEach(o=>coins.push([o.value,o.value.replace(/EUR$/,'')]));
+  box.innerHTML='<div class="status">⏳ Signalen berekenen…</div>';
+  const rows=[];
+  for(const [sym,ticker] of coins){
+    try{
+      const raw=await fetchMarketCoin(sym);
+      const p=raw.map(x=>x[1]),i=p.length-1;
+      const d=scoreDetails(p,i),s=signalDetails(p,i);
+      if(!d||!s)throw Error('onvoldoende data');
+      const st=historicalSignalStats(p,i,30);
+      rows.push({sym,ticker,d,s,st,price:p[i]});
+    }catch(e){rows.push({ticker,err:true});}
+  }
+  const rank={KOOP:0,WACHT:1,VERKOOP:2};
+  rows.sort((a,b)=>{
+    if(a.err&&!b.err)return 1;if(!a.err&&b.err)return -1;if(a.err&&b.err)return 0;
+    return rank[a.s.action]-rank[b.s.action]||b.s.confidence-a.s.confidence;
+  });
+  const best=rows.find(x=>!x.err);
+  try{
+    const log=JSON.parse(localStorage.getItem('cryptoSignalLogV5')||'[]');
+    const today=new Date().toISOString().slice(0,10);
+    rows.filter(x=>!x.err).forEach(x=>log.push({date:today,ticker:x.ticker,action:x.s.action,score:x.d.total,risk:x.d.risk,price:x.price}));
+    const clean=log.filter((v,i,a)=>a.findIndex(z=>z.date===v.date&&z.ticker===v.ticker)===i).slice(-80);
+    localStorage.setItem('cryptoSignalLogV5',JSON.stringify(clean));
+  }catch(e){}
+  box.innerHTML=(best?`<div class="signalhero"><div class="bigsignal"><div class="mini">STERKSTE SIGNAAL</div><div class="action">${best.ticker} — ${best.s.action}</div><div class="confidence">Betrouwbaarheid ${best.s.confidence}%</div><div class="tagrow"><span class="tag">Score ${best.d.total}/100</span><span class="tag">Risico ${best.d.risk}/100</span><span class="tag">${euro(best.price)}</span></div></div><div class="bigsignal"><b>Historische KOOP-kans</b><div class="ai-big">${best.st.buyRate==null?'—':pct(best.st.buyRate)}</div><div class="mini">${best.st.buyN} historische signalen</div></div></div>`:'')+
+    '<h3>Analyse</h3>'+rows.map(x=>x.err?`<div class="check bad"><b>${x.ticker}</b> — geen bruikbare data</div>`:`<div class="check ${signalClass(x.s.action)}"><b>${x.ticker} — ${x.s.action}</b> · Score ${x.d.total}/100 · Risico ${x.d.risk}/100 · Betrouwbaarheid ${x.s.confidence}% · KOOP-kans 30d ${x.st.buyRate==null?'—':pct(x.st.buyRate)}</div>`).join('');
+  renderSignalLog();
+}
+
+function renderSignalLog(){
+  const el=document.getElementById('signalLogOut'); if(!el)return;
+  try{
+    const log=JSON.parse(localStorage.getItem('cryptoSignalLogV5')||'[]').slice(-12).reverse();
+    el.innerHTML=log.length?'<h3>📝 Signaallog</h3>'+log.map(x=>`<div class="logrow"><b>${x.date}</b> · ${x.ticker} · <span class="smallpill">${x.action}</span> · score ${x.score} · risico ${x.risk} · ${euro(x.price)}</div>`).join(''):'';
+  }catch(e){el.innerHTML='';}
+}
+
+function getSelectedSymbol(){
+  return document.getElementById('coin').value;
+}
+function getCoinName(symbol){
+  const map={BTCEUR:'Bitcoin (BTC)',ETHEUR:'Ethereum (ETH)',SOLEUR:'Solana (SOL)',XRPEUR:'XRP (XRP)'};
+  return map[symbol]||symbol.replace(/EUR$/,'')+' (EUR)';
+}
+function addCustomCoin(){
+  const input=document.getElementById('customCoin');
+  if(!input)return;
+  const v=input.value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(!v){alert('Vul bijvoorbeeld ADA, DOGE, LINK of AVAX in.');return;}
+  const sel=document.getElementById('coin');
+  let opt=[...sel.options].find(o=>o.value===v+'EUR');
+  if(!opt){
+    opt=document.createElement('option');
+    opt.value=v+'EUR'; opt.textContent=v+' (eigen munt)';
+    sel.appendChild(opt);
+  }
+  sel.value=v+'EUR';
+  input.value='';
+  saveCustomCoins();
+  updateRemoveButton();
+}
+
+const standardCoins=new Set(['BTCEUR','ETHEUR','SOLEUR','XRPEUR']);
+const customCoinsKey='cryptoCustomCoinsV7';
+
+function saveCustomCoins(){
+  const values=[...document.getElementById('coin').options]
+    .map(o=>o.value)
+    .filter(v=>!standardCoins.has(v));
+  try{localStorage.setItem(customCoinsKey,JSON.stringify(values));}catch(e){}
+}
+
+function loadCustomCoins(){
+  const sel=document.getElementById('coin');
+  try{
+    const saved=JSON.parse(localStorage.getItem(customCoinsKey)||'[]');
+    if(!Array.isArray(saved))return;
+    saved
+      .filter(v=>/^[A-Z0-9]+EUR$/.test(v)&&!standardCoins.has(v))
+      .forEach(value=>{
+        if([...sel.options].some(o=>o.value===value))return;
+        const ticker=value.replace(/EUR$/,'');
+        const opt=document.createElement('option');
+        opt.value=value;
+        opt.textContent=ticker+' (eigen munt)';
+        sel.appendChild(opt);
+      });
+  }catch(e){}
+  updateRemoveButton();
+}
+
+function removeCustomCoin(){
+  const sel=document.getElementById('coin');
+  if(standardCoins.has(sel.value))return;
+  const label=sel.options[sel.selectedIndex]?.textContent||sel.value;
+  if(!confirm(`${label} verwijderen uit je opgeslagen munten?`))return;
+  sel.remove(sel.selectedIndex);
+  sel.value='BTCEUR';
+  saveCustomCoins();
+  updateRemoveButton();
+}
+
+function updateRemoveButton(){
+  const sel=document.getElementById('coin');
+  const btn=document.getElementById('removeCoinBtn');
+  if(btn)btn.disabled=!sel||standardCoins.has(sel.value);
+}
+
+document.addEventListener('DOMContentLoaded',loadCustomCoins);
+
+function aiDecision(d,s,stats){
+  let probability=50;
+  probability += Math.round((d.total-50)*0.45);
+  probability += Math.round((s.confidence-55)*0.18);
+  if(stats && stats.buyRate!=null && stats.buyN>=5) probability += Math.round((stats.buyRate-.5)*35);
+  if(d.risk>=70) probability-=10;
+  else if(d.risk>=55) probability-=5;
+  probability=Math.max(5,Math.min(95,probability));
+
+  let expected=expectedReturn(d,stats);
+  if(s.action==='VERKOOP') expected=Math.min(expected,-Math.abs(expected||.03));
+  return {probability,expected};
+}
+async function run(){
+  const out=document.getElementById('out');
+  const btn=document.getElementById('runBtn');
+  btn.disabled=true;
+  out.innerHTML='<div class="card">⏳ Historische gegevens ophalen en score berekenen…</div>';
+
+  try{
+    const symbol=getSelectedSymbol();
+    const cap=+document.getElementById('capital').value||500;
+    const years=+document.getElementById('years').value;
+    const fee=+document.getElementById('fee').value||0;
+
+    const raw=await fetchData(symbol,years*365+250);
+    const res=simulate(raw,cap,fee);
+    const p=res.p,i=p.length-1;
+    const d=scoreDetails(p,i);
+    if(!d) throw Error('Onvoldoende historische gegevens voor een betrouwbare score.');
+
+    const now=d.price;
+    const name=getCoinName(symbol);
+    const adv=advice(d.total); const sig=signalDetails(p,i); const sigReasons=signalReason(d); const stats30=historicalSignalStats(p,i,30); const stats60=historicalSignalStats(p,i,60); const decision=todayDecision(d,sig,stats30); const expRet=expectedReturn(d,stats30); const ai=aiDecision(d,sig,stats30);
+    const riskLabel=d.risk<40?'LAAG':d.risk<65?'GEMIDDELD':'HOOG';
+    const riskClass=d.risk<40?'risk-low':d.risk<65?'risk-mid':'risk-high';
+
+    const top=Math.max(...p.slice(-Math.min(365,p.length)));
+    const dd=(top-now)/top;
+
+    // Dynamic zones based on recent volatility instead of fixed percentages only.
+    const volBand=Math.max(.06,Math.min(.18,d.volatility/4));
+    const z1=now*(1-volBand*.55);
+    const z2=now*(1-volBand);
+    const stop=now*(1-Math.max(.14,Math.min(.25,volBand*1.6)));
+    const t1=now*(1+Math.max(.10,Math.min(.20,volBand*.9)));
+    const t2=now*(1+Math.max(.20,Math.min(.40,volBand*1.8)));
+
+    const buyDate=res.buyIdx==null?'Geen koopsignaal':new Date(raw[res.buyIdx][0]).toLocaleDateString('nl-NL');
+    const winner=res.final>=res.bh?'Historische strategie':'Kopen & vasthouden';
+
+    const reasons=[];
+    if(d.s50>d.s200) reasons.push('positieve middellange trend');
+    else reasons.push('zwakke trend');
+    if(d.rsi<55) reasons.push('RSI niet oververhit');
+    else reasons.push('RSI relatief hoog');
+    if(d.drawdown>.20) reasons.push('duidelijk onder de 1-jaar top');
+    else reasons.push('dicht bij de 1-jaar top');
+    if(d.macd>0) reasons.push('MACD positief');
+    else reasons.push('MACD negatief');
+
+    out.innerHTML=`
+      <div class="card">
+        <h2>${name} — handelssignaal</h2>
+        <div class="signalhero"><div class="bigsignal"><div class="mini">ACTIE</div><div class="action">${sig.action}</div><div class="confidence">Betrouwbaarheid ${sig.confidence}%</div><div class="tagrow"><span class="tag">Koop ${sig.buy}</span><span class="tag">Wacht ${sig.wait}</span><span class="tag">Verkoop ${sig.sell}</span></div></div><div class="bigsignal"><b>Waarom?</b>${sigReasons.map(r=>`<div class="check ${signalClass(sig.action)}">✓ ${r}</div>`).join('')}</div></div>
+      </div>
+
+      <div class="card">
+        <h2>🤖 Slimme beslislaag — Versie 7</h2>
+        <div class="ai-grid">
+          <div class="ai-box ${ai.probability>=65?'ai-good':ai.probability<45?'ai-bad':'ai-warn'}">
+            <div class="muted2">KANS OP POSITIEF RESULTAAT · 30 DAGEN</div>
+            <div class="ai-big">${ai.probability}%</div>
+          </div>
+          <div class="ai-box">
+            <div class="muted2">VERWACHT RENDEMENT · 30 DAGEN</div>
+            <div class="ai-big">${pct(ai.expected)}</div>
+          </div>
+          <div class="ai-box">
+            <div class="muted2">HISTORISCHE KOOP-KANS</div>
+            <div class="ai-big">${stats30.buyRate==null?'—':pct(stats30.buyRate)}</div>
+          </div>
+          <div class="ai-box">
+            <div class="muted2">RISICO</div>
+            <div class="ai-big">${d.risk}/100</div>
+          </div>
+        </div>
+        <p class="small">Dit is een modelmatige kansinschatting op basis van de bestaande indicatoren en historische signalen; het is geen echte garantie of zelfstandig AI-model.</p>
+      </div>
+
+      <div class="card">
+        <h2>🚦 Vandaag doen?</h2>
+        <div class="v5grid">
+          <div class="v5box ${decision.class}"><div class="muted2">ACTIE</div><div class="v5big">${decision.label}</div></div>
+          <div class="v5box"><div class="muted2">Verwacht rendement 30d*</div><div class="v5big">${pct(expRet)}</div></div>
+          <div class="v5box"><div class="muted2">Historische KOOP-kans</div><div class="v5big">${stats30.buyRate==null?'—':pct(stats30.buyRate)}</div><div class="muted2">${stats30.buyN} signalen</div></div>
+          <div class="v5box"><div class="muted2">Signaalsterkte</div><div class="v5big">${sig.confidence}%</div></div>
+        </div>
+        <p class="small">* Historische verwachting; geen garantie voor toekomstig rendement.</p>
+      </div>
+      <div class="card">
+        <h2>📊 Historische betrouwbaarheid</h2>
+        <div class="v5grid">
+          <div class="v5box"><b>KOOP → 30 dagen</b><br>${stats30.buyRate==null?'—':pct(stats30.buyRate)}<br><span class="muted2">${stats30.buyN} signalen · gem. ${stats30.buyAvg==null?'—':pct(stats30.buyAvg)}</span></div>
+          <div class="v5box"><b>KOOP → 60 dagen</b><br>${stats60.buyRate==null?'—':pct(stats60.buyRate)}<br><span class="muted2">${stats60.buyN} signalen · gem. ${stats60.buyAvg==null?'—':pct(stats60.buyAvg)}</span></div>
+          <div class="v5box"><b>VERKOOP → 30 dagen</b><br>${stats30.sellRate==null?'—':pct(stats30.sellRate)}<br><span class="muted2">${stats30.sellN} signalen</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>${name} — huidig advies</h2>
+        <div class="recommend">
+          <div class="kpis">
+            <div class="kpi"><div class="muted">Score</div><div class="num">${d.total}/100</div><span class="pill ${adviceClass(d.total)}">${adv}</span></div>
+            <div class="kpi"><div class="muted">Koers</div><div class="num">${euro(now)}</div></div>
+            <div class="kpi"><div class="muted">Risico</div><div class="num">${riskLabel}</div><span class="pill ${riskClass}">${d.risk}/100</span></div>
+            <div class="kpi"><div class="muted">30d momentum</div><div class="num">${pct(d.momentum30)}</div></div>
+          </div>
+        </div>
+
+        <h3>Waarom dit advies?</h3>
+        <p>${reasons.join(' · ')}.</p>
+
+        <h3>Score-opbouw</h3>
+        <div class="scoregrid">
+          <div class="signal"><div class="muted">Trend</div><b>${d.trend}/22</b><div class="bar"><span style="width:${d.trend/22*100}%"></span></div></div>
+          <div class="signal"><div class="muted">RSI</div><b>${d.rsiScore}/18</b><div class="bar"><span style="width:${d.rsiScore/18*100}%"></span></div></div>
+          <div class="signal"><div class="muted">Koopkans</div><b>${d.drawScore}/18</b><div class="bar"><span style="width:${d.drawScore/18*100}%"></span></div></div>
+          <div class="signal"><div class="muted">Momentum</div><b>${d.momentumScore}/10</b><div class="bar"><span style="width:${d.momentumScore/10*100}%"></span></div></div>
+          <div class="signal"><div class="muted">MACD</div><b>${d.macdScore}/3</b><div class="bar"><span style="width:${d.macdScore/3*100}%"></span></div></div>
+        </div>
+
+        <h3>💶 Positiegrootte bij €500</h3>
+        <div class="v5grid">
+          <div class="v5box"><div class="muted2">Max. inzet o.b.v. risico</div><div class="v5big">${euro(Math.round(cap*Math.max(.15,Math.min(.70,(100-d.risk)/100))))}</div></div>
+          <div class="v5box"><div class="muted2">Risico</div><div class="v5big">${d.risk}/100</div></div>
+          <div class="v5box"><div class="muted2">Positietype</div><div class="v5big">${d.risk>=70?'KLEIN':d.risk>=50?'NORMAAL':'RUIM'}</div></div>
+        </div>
+        <h3>Koopzones</h3>
+        <div class="buyzone">
+          <div class="zone"><b>Eerste koopzone</b><br>${euro(z1)} – ${euro(now)}</div>
+          <div class="zone"><b>Sterke koopzone</b><br>${euro(z2)} – ${euro(z1)}</div>
+          <div class="zone"><b>Risicogrens</b><br>${euro(stop)}</div>
+          <div class="zone"><b>Koersdoelen</b><br>${euro(t1)} / ${euro(t2)}</div>
+        </div>
+
+        <h3>Indicatoren</h3>
+        <table>
+          <tr><td>30-daags gemiddelde</td><td>${euro(d.s30)}</td></tr>
+          <tr><td>50-daags gemiddelde</td><td>${euro(d.s50)}</td></tr>
+          <tr><td>200-daags gemiddelde</td><td>${euro(d.s200)}</td></tr>
+          <tr><td>RSI</td><td>${d.rsi.toFixed(1)}</td></tr>
+          <tr><td>Momentum 30 dagen</td><td>${pct(d.momentum30)}</td></tr>
+          <tr><td>Momentum 90 dagen</td><td>${pct(d.momentum90)}</td></tr>
+          <tr><td>Volatiliteit op jaarbasis</td><td>${pct(d.volatility)}</td></tr>
+          <tr><td>Daling vanaf 1-jaar top</td><td>${pct(dd)}</td></tr>
+        </table>
+        <p class="small">Laatste beschikbare koers: ${new Date(raw[i][0]).toLocaleString('nl-NL')}</p>
+      </div>
+
+      <div class="card">
+        <h2>📈 Backtest</h2>
+        <div class="kpis">
+          <div class="kpi"><div class="muted">Strategie</div><div class="num">${euro(res.final)}</div><div>${pct(res.ret)}</div></div>
+          <div class="kpi"><div class="muted">Buy & hold</div><div class="num">${euro(res.bh)}</div><div>${pct(res.bhret)}</div></div>
+          <div class="kpi"><div class="muted">Trades</div><div class="num">${res.trades}</div></div>
+          <div class="kpi"><div class="muted">Max. verlies</div><div class="num">${pct(res.maxDD)}</div></div>
+        </div>
+        <p>Beste methode in deze test: <b>${winner}</b>. Eerste instapmoment: <b>${buyDate}</b>.</p>
+        <p class="small">Versie 7 voorkomt vooruitkijken: een signaal op dag t wordt pas op dag t+1 uitgevoerd. Transactiekosten zijn in beide methoden verwerkt.</p>
+        <table>
+          <tr><td>Winnende trades</td><td class="tradegood">${res.wins}</td></tr>
+          <tr><td>Verliesgevende trades</td><td class="tradebad">${res.losses}</td></tr>
+          <tr><td>Totale transactiekosten</td><td>${euro(res.totalFees)}</td></tr>
+          <tr><td>Positie aan einde test</td><td>${res.openPosition?'In de markt':'Cash'}</td></tr>
+        </table>
+        <canvas id="chart"></canvas>
+      </div>
+
+      <div class="card">
+        <h2>💡 Wat betekent dit?</h2>
+        <p>De score is een historische beslissingshulp. De risicoscore staat los van de koopscore: een munt kan aantrekkelijk lijken én tegelijk veel risico hebben. De koopzones worden aangepast aan de recente volatiliteit.</p>
+        <p class="small">Dit is een experimentele beslissingshulp en geen persoonlijk beleggingsadvies. Historische resultaten bieden geen garantie voor toekomstige rendementen.</p>
+      </div>`;
+
+    drawChart(raw,res); buildDailyDashboard().then(renderSignalLog);
+  }catch(e){
+    console.error(e);
+    out.innerHTML='<div class="card"><div class="notice error"><b>Analyse mislukt:</b> '+e.message+'</div><p class="small">Controleer je internetverbinding en probeer opnieuw.</p></div>';
+  }finally{
+    btn.disabled=false;
+  }
+}
+async function market(){
+  const b=document.getElementById('marketBtn');
+  const o=document.getElementById('marketOut');
+  b.disabled=true;
+  try{
+
+  const coins=[
+    ['BTCEUR','Bitcoin'],
+    ['ETHEUR','Ethereum'],
+    ['SOLEUR','Solana'],
+    ['XRPEUR','XRP']
+  ];
+  [...document.getElementById('coin').options]
+    .filter(o=>!standardCoins.has(o.value))
+    .forEach(o=>coins.push([o.value,o.value.replace(/EUR$/,'')]));
+  const coinCount=coins.length;
+
+  o.innerHTML=`
+    <div class="status">
+      ⏳ Marktgegevens ophalen…<br>
+      <span class="small">0 van ${coinCount} munten verwerkt</span>
+    </div>`;
+
+  const rows=[];
+
+  for(let n=0;n<coins.length;n++){
+    const [sym,name]=coins[n];
+
+    // Show progress while each coin is loaded.
+    o.innerHTML=`
+      <div class="status">
+        ⏳ ${name} analyseren…<br>
+        <span class="small">${n} van ${coinCount} munten verwerkt</span>
+      </div>`;
+
+    try{
+      const raw=await fetchMarketCoin(sym);
+      const p=raw.map(x=>x[1]);
+      const i=p.length-1;
+
+      if(p.length<31) throw Error('Te weinig koersdata');
+
+      const s=scoreAt(p,i);
+      rows.push({
+        sym,name,
+        _p:p,
+        price:p[i],
+        s:s==null?0:s,
+        mom:p[i]/p[i-30]-1,
+        date:raw[i][0],
+        ok:true
+      });
+    }catch(e){
+      console.error(name+' fout:',e);
+      rows.push({
+        sym,name,price:null,s:0,mom:null,date:null,ok:false,
+        error:e.message||'onbekende fout'
+      });
+    }
+  }
+
+  rows.sort((a,b)=>b.s-a.s);
+
+  const htmlRows=rows.map(x=>{
+    if(!x.ok){
+      return `<tr>
+        <td><b>${x.name}</b></td>
+        <td colspan="4"><span class="pill red">Geen data</span></td>
+      </tr>`;
+    }
+
+    return `<tr>
+      <td><b>${x.name}</b></td>
+      <td>${euro(x.price)}</td>
+      <td><b>${x.s}/100</b></td>
+      <td><span class="pill ${adviceClass(x.s)}">${advice(x.s)}</span></td>
+      <td>${pct(x.mom)}</td>
+    </tr>`;
+  }).join('');
+
+  const successful=rows.filter(x=>x.ok).length;
+
+  o.innerHTML=`
+    <table>
+      <tr>
+        <th>Coin</th>
+        <th>Koers</th>
+        <th>Score</th>
+        <th>Advies</th>
+        <th>30d</th>
+      </tr>
+      ${htmlRows}
+    </table>
+    <div class="status ${successful===coinCount?'success':''}">
+      ${successful}/${coinCount} munten succesvol geanalyseerd.
+      <br><span class="small">Laatste beschikbare koersdata: ${new Date(Math.max(...rows.filter(x=>x.ok).map(x=>x.date||0))).toLocaleString('nl-NL')}</span>
+    </div>`;
+
+  // Voorbeeldportefeuille: score + risico, met het ingestelde startkapitaal.
+  const cap=Math.max(1,+document.getElementById('capital').value||500);
+  const portfolioTitle=document.getElementById('portfolioTitle');
+  if(portfolioTitle.firstChild)portfolioTitle.firstChild.nodeValue=`💶 Voorbeeldverdeling voor ${euro(cap)} `;
+  const selected=rows
+    .filter(x=>x.ok && x.s>=68)
+    .map(x=>({...x}));
+
+  // Reuse the already loaded data where possible by calculating risk here.
+  for(const x of selected){
+    try{
+      const raw=await fetchMarketCoin(x.sym);
+      const p=raw.map(v=>v[1]);
+      const d=scoreDetails(p,p.length-1);
+      x.risk=d?d.risk:65;
+    }catch(e){x.risk=65;}
+  }
+
+  const investable=selected.filter(x=>x.s>=68);
+  if(investable.length){
+    const weights=investable.map(x=>Math.max(1,(x.s-55)*(1-(x.risk/140))));
+    const sum=weights.reduce((a,b)=>a+b,0);
+    investable.forEach((x,j)=>x.alloc=Math.round(cap*weights[j]/sum));
+
+    let total=investable.reduce((a,x)=>a+(x.alloc||0),0);
+    while(total>cap){
+      const x=investable.reduce((best,c)=>((c.alloc||0)>(best.alloc||0)?c:best),investable[0]);
+      x.alloc--;total--;
+    }
+    const cash=cap-total;
+
+    document.getElementById('portfolioOut').innerHTML=
+      `<b>Voorbeeldverdeling ${euro(cap)}:</b><br>`+
+      investable.map(x=>`${x.name}: <b>${euro(x.alloc)}</b> <span class="small">(score ${x.s}, risico ${x.risk}/100)</span>`).join('<br>')+
+      `<br>Cash: <b>${euro(cash)}</b>
+       <p class="small">De verdeling weegt zowel score als risico mee. Geen persoonlijk beleggingsadvies.</p>`;
+  }else{
+    document.getElementById('portfolioOut').innerHTML=
+      `Geen munt heeft momenteel een voldoende hoge score. Voorbeeld: <b>${euro(cap)} cash</b> en wachten op betere signalen.`;
+  }
+  }catch(e){
+    console.error(e);
+    o.innerHTML=`<div class="notice error"><b>Marktanalyse mislukt:</b> ${e.message||'Onbekende fout'}</div>`;
+  }finally{
+    b.disabled=false;
+  }
+}
+</script></body></html>
